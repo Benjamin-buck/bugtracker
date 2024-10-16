@@ -13,9 +13,10 @@ const NavBar = () => {
   ];
 
   return (
-    <nav className="flex gap-6 border-b mb-5 px-5 py-4">
-      <Link href="/" className="flex items-center text-2xl text-red-500">
-        <FaBug />
+    <nav className="flex gap-6 border-b mb-5 px-5 py-4 items-center">
+      <Link href="/" className="flex items-center text-2xl gap-2">
+        <FaBug className="text-red-500" />
+        <h1 className="text-xl font-bold">Bugs.io</h1>
       </Link>
       <ul className="flex gap-6">
         {links.map(({ href, label }) => (
