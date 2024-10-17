@@ -1,5 +1,7 @@
 "use client";
+import prisma from "@/prisma/client";
 import { AlertDialog, Button, Flex } from "@radix-ui/themes";
+import axios from "axios";
 
 const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
   return (
