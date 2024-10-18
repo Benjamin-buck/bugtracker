@@ -3,6 +3,17 @@ The Bug Tracker project is a full stack application to track bugs and their stat
 
 The project uses Next.JS 13 for the front end and utilizes prisma to interact with the mySQL database.
 
+## Project Features
+- Full stack integration with mySQL Database to store issues.
+- Full CRUD abilities to Create, Read, Update, and Delete issues.
+- Full issue sorting capabilities based on status
+
+## Future Enhancements
+- User authentication / protected routes
+- Assign issues to users
+- Sort issues based on columns (ascending / descending).
+- User profiles
+
 
 ## Starting the project
 ### Pre requisits
