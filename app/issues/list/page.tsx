@@ -6,10 +6,18 @@ import IssueActions from "./IssueActions";
 import { date } from "zod";
 import { issueSchema } from "@/app/ValidationSchema";
 import { sort } from "fast-sort";
-import { Issue } from "@prisma/client";
+import { Issue, Status } from "@prisma/client";
 
-const page = async () => {
-  const issues = await prisma.issue.findMany();
+const page = async ({ searchParams }: { searchParams: { status: Status } }) => {
+  const statuses = Object.values(Status);
+  const status = statuses.includes(searchParams.status)
+    ? searchParams.status
+    : undefined;
+  const issues = await prisma.issue.findMany({
+    where: {
+      status,
+    },
+  });
 
   return (
     <div>
