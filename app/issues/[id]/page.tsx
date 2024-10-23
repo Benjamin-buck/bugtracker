@@ -4,8 +4,11 @@ import { Box, Flex, Grid } from "@radix-ui/themes";
 import EditIssueButton from "./EditIssueButton";
 import IssueDetails from "./IssueDetails";
 import DeleteIssueButton from "./DeleteIssueButton";
+import authOptions from "@/app/auth/authOptions";
+import { getServerSession } from "next-auth";
 
 const IssuePage = async ({ params }: { params: { id: string } }) => {
+  const session = await getServerSession(authOptions);
   // Gets the unique issue from the url id.
   const issue = await prisma.issue.findUnique({
     where: {
@@ -21,12 +24,14 @@ const IssuePage = async ({ params }: { params: { id: string } }) => {
       <Box className="md:col-span-4">
         <IssueDetails issue={issue} />
       </Box>
-      <Box>
-        <Flex direction="column" gap="4">
-          <EditIssueButton issueId={issue.id} />
-          <DeleteIssueButton issueId={issue.id} />
-        </Flex>
-      </Box>
+      {session && (
+        <Box>
+          <Flex direction="column" gap="4">
+            <EditIssueButton issueId={issue.id} />
+            <DeleteIssueButton issueId={issue.id} />
+          </Flex>
+        </Box>
+      )}
     </Grid>
   );
 };
