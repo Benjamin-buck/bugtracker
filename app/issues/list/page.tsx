@@ -23,10 +23,10 @@ const page = async ({ searchParams }: { searchParams: { status: Status } }) => {
     <div>
       <IssueActions />
 
-      <Table.Root variant="surface" className="mt-5">
+      <Table.Root variant="surface" className="mt-5" size="3">
         <Table.Header>
           <Table.Row>
-            <TableColumnHeaderCell>Issue</TableColumnHeaderCell>
+            <TableColumnHeaderCell width="60%">Issue</TableColumnHeaderCell>
             <TableColumnHeaderCell className="hidden md:table-cell">
               Status
             </TableColumnHeaderCell>
