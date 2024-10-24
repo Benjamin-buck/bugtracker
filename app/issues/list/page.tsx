@@ -7,8 +7,25 @@ import { date } from "zod";
 import { issueSchema } from "@/app/ValidationSchema";
 import { sort } from "fast-sort";
 import { Issue, Status } from "@prisma/client";
+import NextLink from "next/link";
+import { ArrowUpIcon } from "@radix-ui/react-icons";
 
-const page = async ({ searchParams }: { searchParams: { status: Status } }) => {
+const page = async ({
+  searchParams,
+}: {
+  searchParams: { status: Status; orderBy: keyof Issue };
+}) => {
+  const columns: {
+    label: string;
+    value: keyof Issue;
+    className?: string;
+    witdh?: string;
+  }[] = [
+    { label: "Issue", value: "title", witdh: "60%" },
+    { label: "Status", value: "status", className: "hidden md:table-cell" },
+    { label: "Created", value: "createdAt", className: "hidden md:table-cell" },
+  ];
+
   const statuses = Object.values(Status);
   const status = statuses.includes(searchParams.status)
     ? searchParams.status
@@ -26,30 +43,50 @@ const page = async ({ searchParams }: { searchParams: { status: Status } }) => {
       <Table.Root variant="surface" className="mt-5" size="3">
         <Table.Header>
           <Table.Row>
-            <TableColumnHeaderCell width="60%">Issue</TableColumnHeaderCell>
-            <TableColumnHeaderCell className="hidden md:table-cell">
-              Status
-            </TableColumnHeaderCell>
-            <TableColumnHeaderCell className="hidden md:table-cell">
-              Created On
-            </TableColumnHeaderCell>
+            {columns.map(({ label, value, className, witdh }) => (
+              <TableColumnHeaderCell
+                key={label}
+                className={className}
+                width={witdh}
+              >
+                <NextLink
+                  href={{
+                    query: { ...searchParams, orderBy: value },
+                  }}
+                >
+                  {label}
+                </NextLink>
+                {value === searchParams.orderBy && (
+                  <ArrowUpIcon className="inline" />
+                )}
+              </TableColumnHeaderCell>
+            ))}
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {issues.map(({ id, createdAt, title, description, status }) => (
-            <Table.Row key={id}>
-              <Table.Cell>
-                <Link href={`/issues/${id}`}>{title}</Link>
-                <div className="block md:hidden">{status}</div>
-              </Table.Cell>
-              <Table.Cell className="hidden md:table-cell">
-                <IssueStatusBadge status={status} />
-              </Table.Cell>
-              <Table.Cell className="hidden md:table-cell">
-                {createdAt.toDateString()}
-              </Table.Cell>
-            </Table.Row>
-          ))}
+          {issues.map(
+            ({
+              id,
+              createdAt,
+              title,
+              description,
+              status,
+              assignedToUserId,
+            }) => (
+              <Table.Row key={id}>
+                <Table.Cell>
+                  <Link href={`/issues/${id}`}>{title}</Link>
+                  <div className="block md:hidden">{status}</div>
+                </Table.Cell>
+                <Table.Cell className="hidden md:table-cell">
+                  <IssueStatusBadge status={status} />
+                </Table.Cell>
+                <Table.Cell className="hidden md:table-cell">
+                  {createdAt.toDateString()}
+                </Table.Cell>
+              </Table.Row>
+            )
+          )}
         </Table.Body>
       </Table.Root>
     </div>
