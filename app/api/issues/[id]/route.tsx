@@ -9,27 +9,31 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // Protecting the API Endpoint
   const session = getServerSession(authOptions);
-
   if (!session) return NextResponse.json({}, { status: 401 });
+
+  // Get the body of the request and validate
   const body = await request.json();
   const validation = issueSchema.safeParse(body);
-
   if (!validation.success)
     return NextResponse.json(validation.error.errors, { status: 400 });
 
+  // Fetch issue from the database
   const issue = await prisma.issue.findUnique({
     where: {
       id: parseInt(params.id),
     },
   });
 
+  // Validate an issue is returned
   if (!issue)
     return NextResponse.json(
       { error: "Issue does not exist." },
       { status: 404 }
     );
 
+  // Update the issue with the request details
   const updatedIssue = await prisma.issue.update({
     where: { id: issue.id },
     data: {
@@ -39,6 +43,7 @@ export async function PATCH(
     },
   });
 
+  // Return the response to the user.
   return NextResponse.json(updatedIssue, { status: 200 });
 }
 
