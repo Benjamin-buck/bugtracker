@@ -30,6 +30,9 @@ const page = async ({ searchParams }: { searchParams: IssueQuery }) => {
 
     // The number of records we want to fetch.
     take: pageSize,
+    include: {
+      assignedToUser: true,
+    },
   });
 
   const issueCount = await prisma.issue.count({ where });

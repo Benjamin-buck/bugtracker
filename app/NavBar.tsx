@@ -74,7 +74,7 @@ const AuthStatus = () => {
       <DropdownMenu.Root>
         <DropdownMenu.Trigger>
           <Flex gap="3" align="center" className="font-semibold">
-            {session!.user?.name}
+            <p className="max-md:hidden">{session!.user?.name}</p>
             <Avatar
               src={session!.user!.image!}
               fallback="?"
