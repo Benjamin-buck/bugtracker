@@ -9,11 +9,16 @@ import { sort } from "fast-sort";
 import { Issue, Status } from "@prisma/client";
 import NextLink from "next/link";
 import { ArrowUpIcon } from "@radix-ui/react-icons";
+import Pagination from "@/app/components/Pagination";
 
 const page = async ({
   searchParams,
 }: {
-  searchParams: { status: Status; orderBy: keyof Issue };
+  searchParams: {
+    status: Status;
+    orderBy: keyof Issue;
+    page: string;
+  };
 }) => {
   const columns: {
     label: string;
@@ -30,23 +35,35 @@ const page = async ({
   const status = statuses.includes(searchParams.status)
     ? searchParams.status
     : undefined;
+  const where = { status };
 
   const orderBy = columns
     .map((column) => column.value)
     .includes(searchParams.orderBy)
     ? { [searchParams.orderBy]: "asc" }
     : undefined;
+
+  // If no value is specified, or the page does not exist, value is set to 1
+  const page = parseInt(searchParams.page) || 1;
+
+  // Specifies the number of items per page.
+  const pageSize = 10;
+
   const issues = await prisma.issue.findMany({
-    where: {
-      status,
-    },
+    where,
     orderBy,
+    // Number of records we should skip
+    skip: (page - 1) * pageSize,
+
+    // The number of records we want to fetch.
+    take: pageSize,
   });
+
+  const issueCount = await prisma.issue.count({ where });
 
   return (
     <div>
       <IssueActions />
-
       <Table.Root variant="surface" className="mt-5" size="3">
         <Table.Header>
           <Table.Row>
@@ -96,6 +113,11 @@ const page = async ({
           )}
         </Table.Body>
       </Table.Root>
+      <Pagination
+        pageSize={pageSize}
+        currentPage={page}
+        itemCount={issueCount}
+      />
     </div>
   );
 };
