@@ -4,6 +4,12 @@ import { Status } from "@prisma/client";
 import { columnNames, IssueQuery } from "./IssueTable";
 import Pagination from "@/app/components/Pagination";
 import IssueTable from "./IssueTable";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Issue Tracker - Issues",
+  description: "A list of issues.",
+};
 
 const page = async ({ searchParams }: { searchParams: IssueQuery }) => {
   const statuses = Object.values(Status);
